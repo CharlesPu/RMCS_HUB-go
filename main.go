@@ -2,7 +2,7 @@ package main
 
 import (
 	"RMCS_HUB/app"
-	"RMCS_HUB/infra"
+	// "RMCS_HUB/infra"
 	// "RMCS_HUB/pipe"
 	"RMCS_HUB/protocol"
 	"fmt"
@@ -18,7 +18,7 @@ func init() {
 	fmt.Println("main init...")
 }
 func main() {
-	infra.ShowAllTables()
+	// infra.ShowAllTables()
 
 	queueChan := make(chan []byte, QSize)
 	go protocol.Receive(queueChan)
