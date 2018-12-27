@@ -54,7 +54,7 @@ func receiveHandle(connFd net.Conn, que chan<- []byte) int {
 			/* check reg pack in mysql*/
 			if infra.ExistDtu(rxbuf[:8]) { // exist
 				//update this dtu's fd
-				dtuId = int(((rxbuf[6] & 0x0f) << 4) | (rxbuf[7] & 0x0f))
+				dtuId = infra.GetDTUId(uint32(rxbuf[6]), uint32(rxbuf[7]))
 				infra.SetDTUFd(dtuId, connFd)
 				/* parse... */
 				frameHeader := rxbuf[8:12]

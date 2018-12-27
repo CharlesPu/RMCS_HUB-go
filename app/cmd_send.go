@@ -29,9 +29,7 @@ func CMDSend() {
 			copy(txbuf[13:], protocol.Float32ToByte(vc.CylinderAm))
 			copy(txbuf[17:], protocol.Uint32ToByte(vc.CylinderCycle))
 			// send
-			coId := vc.CompanyID
-			staId := vc.StationID
-			dtuId := ((coId & 0x0f) << 4) | (staId & 0x0f)
+			dtuId := infra.GetDTUId(uint32(vc.CompanyID), uint32(vc.StationID))
 			if fd := infra.GetDTUFd(dtuId); fd != nil { // online
 				txbuf[30] = protocol.GenerateXorValue(txbuf[:30])
 				infra.PrintHexList("cmd_send:", txbuf)
@@ -67,9 +65,7 @@ func CMDSend() {
 					copy(txbuf[26:], protocol.Uint32ToByte(val.Cycle))
 				}
 				//send
-				coId := val.CompanyID
-				staId := val.StationID
-				dtuId := ((coId & 0x0f) << 4) | (staId & 0x0f)
+				dtuId := infra.GetDTUId(uint32(vc.CompanyID), uint32(vc.StationID))
 				if fd := infra.GetDTUFd(dtuId); fd != nil { // online
 					txbuf[30] = protocol.GenerateXorValue(txbuf[:30])
 					infra.PrintHexList("cmd_send:", txbuf)

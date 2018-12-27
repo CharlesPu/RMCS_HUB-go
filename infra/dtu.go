@@ -37,6 +37,10 @@ func init() {
 		// fmt.Println(dtus[i].regPackHex, i)
 	}
 }
+
+func GetDTUId(co_id, sta_id uint32) int {
+	return int(((co_id & 0x0f) << 4) | (sta_id & 0x0f))
+}
 func GetDTUFd(dtuId int) net.Conn {
 	dtus[dtuId].mu.Lock()
 	defer dtus[dtuId].mu.Unlock()

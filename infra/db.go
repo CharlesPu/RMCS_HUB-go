@@ -21,6 +21,11 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
+)
+
+const (
+	ID_MAX_NUM = 32768
 )
 
 type DTU struct {
@@ -125,10 +130,17 @@ func TruncateTables(ts ...string) {
 
 func InsertVibrationParaT(vp *VibraPara) bool {
 	o := orm.NewOrm()
-	_, err := o.Insert(vp)
-	/*create new copy of old table according to id!*/
-	/*...*/
-
+	id, err := o.Insert(vp)
+	/*create copy of old table if too full!*/
+	if id > ID_MAX_NUM {
+		year := time.Now().Year()
+		month := time.Now().Month()
+		day := time.Now().Day()
+		newTableName := fmt.Sprintf("VibrationPara_%d%d%d", year, month, day)
+		o.Raw("RENAME TABLE VibrationPara TO ?", newTableName).Exec()
+		o.Raw("CREATE TABLE VibrationPara LIKE ?", newTableName).Exec()
+		// or o.Raw("CREATE TABLE VibrationPara SELECT * FROM ? WHERE 1=2", newTableName).Exec()
+	}
 	if err == nil {
 		return true
 	} else {
@@ -138,10 +150,17 @@ func InsertVibrationParaT(vp *VibraPara) bool {
 
 func InsertBladeRTInfoT(brti *BladeRTInfo) bool {
 	o := orm.NewOrm()
-	_, err := o.Insert(brti)
-	/*create new copy of old table according to id!*/
-	/*...*/
-
+	id, err := o.Insert(brti)
+	/*create copy of old table if too full!*/
+	if id > ID_MAX_NUM {
+		year := time.Now().Year()
+		month := time.Now().Month()
+		day := time.Now().Day()
+		newTableName := fmt.Sprintf("BladeRTInfo_%d%d%d", year, month, day)
+		o.Raw("RENAME TABLE BladeRTInfo TO ?", newTableName).Exec()
+		o.Raw("CREATE TABLE BladeRTInfo LIKE ?", newTableName).Exec()
+		// or o.Raw("CREATE TABLE VibrationPara SELECT * FROM ? WHERE 1=2", newTableName).Exec()
+	}
 	if err == nil {
 		return true
 	} else {
@@ -152,12 +171,20 @@ func InsertBladeRTInfoT(brti *BladeRTInfo) bool {
 func InsertCylinderRTInfoT(crtis []CylinderRTInfo) bool {
 	o := orm.NewOrm()
 	var err error
+	var id int64
 	for _, val := range crtis {
-		_, err = o.Insert(&val)
+		id, err = o.Insert(&val)
 	}
-	/*create new copy of old table according to id!*/
-	/*...*/
-
+	/*create copy of old table if too full!*/
+	if id > ID_MAX_NUM {
+		year := time.Now().Year()
+		month := time.Now().Month()
+		day := time.Now().Day()
+		newTableName := fmt.Sprintf("CylinderRTInfo_%d%d%d", year, month, day)
+		o.Raw("RENAME TABLE CylinderRTInfo TO ?", newTableName).Exec()
+		o.Raw("CREATE TABLE CylinderRTInfo LIKE ?", newTableName).Exec()
+		// or o.Raw("CREATE TABLE VibrationPara SELECT * FROM ? WHERE 1=2", newTableName).Exec()
+	}
 	if err == nil {
 		return true
 	} else {
